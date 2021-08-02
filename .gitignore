@@ -1,0 +1,10 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+tools/
+_authinfo
+test/
+.Rprofile
+.Rbuildignore
+.Rprofile

@@ -38,6 +38,8 @@ nlp_concepts_translate(
 \item{key_column}{Key column name for unique identifier}
 
 \item{document_column}{text variable column name}
+
+\item{hostname}{\code{NULL} by default, extracts the server name from scoring code file.}
 }
 \value{
 List object with the Rscore code, out castable, out caslib and the written file path.

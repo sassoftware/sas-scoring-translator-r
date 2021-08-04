@@ -17,6 +17,7 @@
 #' @param out_castable_features features output table name, if the argument is not defined the table name will be the same as `out_castable_sentiment` with "_features" added
 #' @param key_column Key column name for unique identifier 
 #' @param document_column text variable column name
+#' @param hostname `NULL` by default, extracts the server name from scoring code file.
 #' @return 
 #' List object with the Rscore code, out castable, out caslib and the written file path.
 #' 
@@ -63,9 +64,9 @@ nlp_sentiment_translate <- function(in_file = NULL,
   }
   
   Rscore <- c("## install swat package from github if needed, uncomment OS version",
-              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.1/R-swat-1.6.1-linux64.tar.gz',repos=NULL, type='file') ## linux",
-              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.1/R-swat-1.6.1-win64.tar.gz',repos=NULL, type='file') ## windows",
-              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.1/R-swat-1.6.1-REST-only-osx64.tar.gz',repos=NULL, type='file') ## osx",
+              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.2/R-swat-1.6.2-linux64.tar.gz',repos=NULL, type='file') ## linux",
+              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.2/R-swat-1.6.2-win64.tar.gz',repos=NULL, type='file') ## windows",
+              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.2/R-swat-1.6.2-REST-only-osx64.tar.gz',repos=NULL, type='file') ## osx",
               "",
               'library("swat")')
   
@@ -162,6 +163,7 @@ nlp_sentiment_translate <- function(in_file = NULL,
 #' @param out_castable_model_table features output table name, if the argument is not defined the table name will be the same as `out_castable_category` with "_modeling" added
 #' @param key_column Key column name for unique identifier 
 #' @param document_column text variable column name
+#' @param hostname `NULL` by default, extracts the server name from scoring code file.
 #' @return 
 #' List object with the Rscore code, out castable, out caslib and the written file path.
 #' 
@@ -207,9 +209,9 @@ nlp_category_translate <- function(in_file = NULL,
   }
   
   Rscore <- c("## install swat package from github if needed, uncomment OS version",
-              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.1/R-swat-1.6.1-linux64.tar.gz',repos=NULL, type='file') ## linux",
-              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.1/R-swat-1.6.1-win64.tar.gz',repos=NULL, type='file') ## windows",
-              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.1/R-swat-1.6.1-REST-only-osx64.tar.gz',repos=NULL, type='file') ## osx",
+              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.2/R-swat-1.6.2-linux64.tar.gz',repos=NULL, type='file') ## linux",
+              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.2/R-swat-1.6.2-win64.tar.gz',repos=NULL, type='file') ## windows",
+              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.2/R-swat-1.6.2-REST-only-osx64.tar.gz',repos=NULL, type='file') ## osx",
               "",
               'library("swat")')
   
@@ -312,6 +314,7 @@ nlp_category_translate <- function(in_file = NULL,
 #' @param out_caslib caslib name of the output table
 #' @param out_castable name of the output table
 #' @param copyVars default `NULL`, will not copy variables to the output. If `"ALL"` will copy all variables to the scored table output, if it is a vector, will copy named vars e.g: `c("var1", "var2)`
+#' @param hostname `NULL` by default, extracts the server name from scoring code file.
 #' @return 
 #' List object with the Rscore code, out castable, out caslib and the written file path.
 #' 
@@ -357,9 +360,9 @@ nlp_topics_translate <- function(in_file = NULL,
   
   
   Rscore <- c("## install swat package from github if needed, uncomment OS version",
-              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.1/R-swat-1.6.1-linux64.tar.gz',repos=NULL, type='file') ## linux",
-              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.1/R-swat-1.6.1-win64.tar.gz',repos=NULL, type='file') ## windows",
-              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.1/R-swat-1.6.1-REST-only-osx64.tar.gz',repos=NULL, type='file') ## osx",
+              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.2/R-swat-1.6.2-linux64.tar.gz',repos=NULL, type='file') ## linux",
+              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.2/R-swat-1.6.2-win64.tar.gz',repos=NULL, type='file') ## windows",
+              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.2/R-swat-1.6.2-REST-only-osx64.tar.gz',repos=NULL, type='file') ## osx",
               "",
               "## Load library",
               'library("swat")')
@@ -477,6 +480,7 @@ nlp_topics_translate <- function(in_file = NULL,
 #' @param out_castable_facts matches output table name, if the argument is not defined the table name will be the same as `out_castable_concepts` with "_facts" added
 #' @param key_column Key column name for unique identifier 
 #' @param document_column text variable column name
+#' @param hostname `NULL` by default, extracts the server name from scoring code file.
 #' @return 
 #' List object with the Rscore code, out castable, out caslib and the written file path.
 #' 
@@ -520,9 +524,9 @@ nlp_concepts_translate <- function(in_file = NULL,
   }
   
   Rscore <- c("## install swat package from github if needed, uncomment OS version",
-              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.1/R-swat-1.6.1-linux64.tar.gz',repos=NULL, type='file') ## linux",
-              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.1/R-swat-1.6.1-win64.tar.gz',repos=NULL, type='file') ## windows",
-              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.1/R-swat-1.6.1-REST-only-osx64.tar.gz',repos=NULL, type='file') ## osx",
+              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.2/R-swat-1.6.2-linux64.tar.gz',repos=NULL, type='file') ## linux",
+              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.2/R-swat-1.6.2-win64.tar.gz',repos=NULL, type='file') ## windows",
+              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.2/R-swat-1.6.2-REST-only-osx64.tar.gz',repos=NULL, type='file') ## osx",
               "",
               'library("swat")')
   

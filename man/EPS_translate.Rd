@@ -12,7 +12,7 @@ EPS_translate(
   in_castable,
   out_caslib,
   out_castable,
-  hostname = "sasserver.demo.sas.com",
+  hostname = "myserver.com",
   copyVars = NULL
 )
 }

@@ -8,6 +8,7 @@ DS_translate(
   in_file = NULL,
   out_file = "dmcas_scorecode.R",
   zip = TRUE,
+  hostname = NULL,
   in_caslib,
   in_castable,
   out_caslib,
@@ -20,6 +21,8 @@ DS_translate(
 \item{out_file}{Path to the translated \code{.R} code file.}
 
 \item{zip}{Boolean, if the score code is inside a zip file. Default to \code{TRUE}. It will look for \code{dmcas_scorecode.sas} file inside the zip.}
+
+\item{hostname}{\code{NULL} by default, extracts the server name from \code{dmcas_scorecode.sas} file.}
 
 \item{in_caslib}{caslib name of the input table}
 

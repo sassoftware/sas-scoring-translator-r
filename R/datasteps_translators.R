@@ -12,6 +12,7 @@
 #' @param in_castable input table name
 #' @param out_caslib caslib name of the output table
 #' @param out_castable output table name
+#' @param hostname `NULL` by default, extracts the server name from `dmcas_scorecode.sas` file.
 #' 
 #' @return
 #' List object with the DS code, Rscore code, out castable, out caslib and the written file path.
@@ -20,9 +21,11 @@
 #' DS_translate("filepath.zip")
 #' 
 #' @export 
+
 DS_translate <- function(in_file = NULL, 
                          out_file = "dmcas_scorecode.R",
                          zip = TRUE,
+                         hostname = NULL,
                          in_caslib, in_castable,
                          out_caslib, out_castable) {
   
@@ -52,16 +55,17 @@ DS_translate <- function(in_file = NULL,
 
     
     Rscore <- c("## install swat package from github if needed, uncomment OS version",
-                "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.1/R-swat-1.6.1-linux64.tar.gz',repos=NULL, type='file') ## linux",
-                "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.1/R-swat-1.6.1-win64.tar.gz',repos=NULL, type='file') ## windows",
-                "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.1/R-swat-1.6.1-REST-only-osx64.tar.gz',repos=NULL, type='file') ## osx",
+                "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.2/R-swat-1.6.2-linux64.tar.gz',repos=NULL, type='file') ## linux",
+                "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.2/R-swat-1.6.2-win64.tar.gz',repos=NULL, type='file') ## windows",
+                "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.2/R-swat-1.6.2-REST-only-osx64.tar.gz',repos=NULL, type='file') ## osx",
                 "",
                 'library("swat")')
     
     ## getting hostname
+    if ( is.null(hostname) ) {
     hostname <- grep("\\* Host", rawScore, value = TRUE)
     hostname <- gsub("\\* Host:\\s+|;", "", hostname)
-    
+    }
     
     Rscore <- c(Rscore, 
                 '',
@@ -155,7 +159,7 @@ EPS_translate <- function(in_file = NULL,
                           zip = TRUE,
                           in_caslib, in_castable,
                           out_caslib, out_castable,
-                          hostname = "sasserver.demo.sas.com",
+                          hostname = "myserver.com",
                           copyVars = NULL) {
   
   if (is.null(in_file)) stop("File must be specified")
@@ -172,9 +176,9 @@ EPS_translate <- function(in_file = NULL,
   astore_name <- gsub(" \\*\\s+", "", astore_row)
 
   Rscore <- c("## install swat package from github if needed, uncomment OS version",
-              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.1/R-swat-1.6.1-linux64.tar.gz',repos=NULL, type='file') ## linux",
-              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.1/R-swat-1.6.1-win64.tar.gz',repos=NULL, type='file') ## windows",
-              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.1/R-swat-1.6.1-REST-only-osx64.tar.gz',repos=NULL, type='file') ## osx",
+              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.2/R-swat-1.6.2-linux64.tar.gz',repos=NULL, type='file') ## linux",
+              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.2/R-swat-1.6.2-win64.tar.gz',repos=NULL, type='file') ## windows",
+              "# install.packages('https://github.com/sassoftware/R-swat/releases/download/v1.6.2/R-swat-1.6.2-REST-only-osx64.tar.gz',repos=NULL, type='file') ## osx",
               "",
               "## Load library",
               'library("swat")')

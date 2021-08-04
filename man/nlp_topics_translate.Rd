@@ -31,6 +31,8 @@ nlp_topics_translate(
 
 \item{out_castable}{name of the output table}
 
+\item{hostname}{\code{NULL} by default, extracts the server name from scoring code file.}
+
 \item{copyVars}{default \code{NULL}, will not copy variables to the output. If \code{"ALL"} will copy all variables to the scored table output, if it is a vector, will copy named vars e.g: \verb{c("var1", "var2)}}
 }
 \value{

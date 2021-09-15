@@ -16,7 +16,12 @@ nlp_sentiment_translate(
   out_castable_features,
   key_column,
   document_column,
-  hostname = NULL
+  hostname = NULL,
+  astore = FALSE,
+  astore_caslib = "casuser",
+  astore_name = "Sentiment_Astore",
+  astore_path = "SentimentModel.astore",
+  copyVars = NULL
 )
 }
 \arguments{
@@ -43,6 +48,16 @@ nlp_sentiment_translate(
 \item{document_column}{text variable column name}
 
 \item{hostname}{\code{NULL} by default, extracts the server name from scoring code file.}
+
+\item{astore}{If set to \code{TRUE}, it will create a scoring code that uploads the astore, available for SAS Viya 2021.1.4 or higher}
+
+\item{astore_caslib}{Only used when \code{astore = TRUE}. The caslib where the astore model is uploaded}
+
+\item{astore_name}{Only used when \code{astore = TRUE}. The castable name where the astore model is uploaded}
+
+\item{astore_path}{Only used when \code{astore = TRUE}. The filepath to the astore file (extract from .zip first)}
+
+\item{copyVars}{Only used when \code{astore = TRUE} default \code{NULL}, will not copy variables of the scoring table to the output. If \code{"ALL"} will copy all variables to the scored table output, if it is a vector, will copy named vars e.g: \verb{c("var1", "var2)}}
 }
 \value{
 List object with the Rscore code, out castable, out caslib and the written file path.

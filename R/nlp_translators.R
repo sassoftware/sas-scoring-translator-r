@@ -18,6 +18,13 @@
 #' @param key_column Key column name for unique identifier 
 #' @param document_column text variable column name
 #' @param hostname `NULL` by default, extracts the server name from scoring code file.
+#' @param astore If set to `TRUE`, it will create a scoring code that uploads the astore, available for SAS Viya 2021.1.4 or higher
+#' @param astore_caslib Only used when `astore = TRUE`. The caslib where the astore model is uploaded
+#' @param astore_name Only used when `astore = TRUE`. The castable name where the astore model is uploaded
+#' @param astore_path Only used when `astore = TRUE`. The filepath to the astore file (extract from .zip first)
+#' @param copyVars Only used when `astore = TRUE` default `NULL`, will not copy variables of the scoring table to the output. If `"ALL"` will copy all variables to the scored table output, if it is a vector, will copy named vars e.g: `c("var1", "var2)`
+
+
 #' @return 
 #' List object with the Rscore code, out castable, out caslib and the written file path.
 #' 
@@ -37,7 +44,12 @@ nlp_sentiment_translate <- function(in_file = NULL,
                                     out_castable_matches, out_castable_features,
                                     key_column, # ID column 
                                     document_column, # Text variable column
-                                    hostname = NULL)
+                                    hostname = NULL,
+                                    astore = FALSE,
+                                    astore_caslib = "casuser",
+                                    astore_name = "Sentiment_Astore",
+                                    astore_path = "SentimentModel.astore",
+                                    copyVars = NULL)
 {
   
   ### Writing extra output column names
@@ -55,11 +67,17 @@ nlp_sentiment_translate <- function(in_file = NULL,
   if (is.null(in_file)) stop("Read file must be specified")
   
   ### reading text
-  if (zip){
+  if (zip & !astore) {
     file_con <- unz(in_file, "ScoreCode.sas")
     rawScore <- readLines(file_con)
     close(file_con)
-  } else {
+  } 
+  if (zip & astore) {
+    file_con <- unz(in_file, "AstoreScoreCode.sas")
+    rawScore <- readLines(file_con)
+    close(file_con)
+  }
+  if (!zip) {
     rawScore <- readLines(in_file)
   }
   
@@ -78,10 +96,13 @@ nlp_sentiment_translate <- function(in_file = NULL,
   }
   
   ## getting language
+  if (!astore){
   language <- grep("%let language", rawScore, value = TRUE)
   language <- stringr::str_extract( language, '(?<=\")(.*)(?=\")')
+  }
+  ## scorecode APPLY SENT Directly
   
-  ## scorecode
+  if (!astore){
   Rscore <- c(Rscore, 
               '',
               ## Defining Variables
@@ -129,6 +150,108 @@ nlp_sentiment_translate <- function(in_file = NULL,
               '',
               paste0('head(scored_sentiment_table)')
   )
+  }
+## scorecode Astore upload method
+
+  
+  if (astore) {
+    
+    ##### Will create CopyVars statement
+    if(is.null(copyVars)){
+      copyVars_ <- "column_names <- NULL"
+    }
+    
+    if(length(copyVars) == 1 && copyVars == "ALL"){
+      copyVars_ <- 
+        c(paste0("## Defining scoring table obtaining column names"),
+          paste0('score_table <- defCasTable(conn,
+                             tablename = in_castable,
+                             caslib = in_caslib)'),
+          '',
+          paste0('column_names <- names(score_table)')
+        )} 
+    else {
+      if(length(copyVars) >= 1 ){
+        copyVars_ <- 
+          paste0('column_names <- c(', paste(paste0('\"', copyVars, '\"'), collapse = ", "), ')')
+      }
+    }
+    
+    
+    Rscore <- c(Rscore, 
+                '',
+                ## Defining Variables
+                paste0('## Defining tables and models variables'),
+                paste0('in_caslib <- ', '\"', in_caslib, '\"'),
+                paste0('in_castable <- ', '\"', in_castable, '\"'),
+                paste0('out_caslib <- ', '\"', out_caslib, '\"'),
+                paste0('out_castable_sentiment <- ', '\"', out_castable_sentiment, '\"'),
+                paste0('astore_caslib <- ', '\"', astore_caslib, '\"'),
+                paste0('astore_name <- ', '\"', astore_name, '\"'),
+                paste0('astore_path <- ', '\"', astore_path, '\" ## same folder/working directory of this file'),
+                
+
+                '',
+                ### Writing connection
+                paste0("## Connecting to SAS Viya"),
+                paste0('conn <- CAS(hostname = \"', hostname, '\", ## change if needed'),
+                paste0("\t\t\t\t\t\tport = 8777,"),
+                paste0("\t\t\t\t\t\tprotocol='http',  ## change protocol to cas and port to 5570 if using binary connection (unix)"),
+                paste0("\t\t\t\t\t\tusername='sasusername', ## use your own credentials"),
+                paste0("\t\t\t\t\t\tpassword='password') ## we encorage using  .authinfo"),
+                paste0(""),
+                
+                ## copyVars will define castable to get column names if needed
+                copyVars_,
+                
+                '',
+                ## Reading astore file
+                
+                "##Reading astore binary",
+                "",
+                
+                'con <- file(astore_path, \"rb\")',
+                "",
+                
+                'store_ <- readBin(con = con, what = raw(),
+                          n = file.size(astore_path)) ', ## n has to be guessed
+                'close(con)',
+                "",
+
+                
+                ### writing score action
+
+                
+                "## loading astore actionset and uploading",
+                'loadActionSet(conn, \"astore\")',
+                
+                '',
+                ### uploading astore
+                paste0('cas.astore.upload(conn,
+                   rstore = list(name = astore_name, caslib = astore_caslib),
+                   store = astore_path
+                  )'),
+                
+                "",
+                "## Scoring table, table assumed to be uploaded",
+                ### scoring astore, table assumed to be uploaded
+                
+                paste0('cas.astore.score(conn,
+                   table = list(caslib= in_caslib, name = in_castable),
+                   out = list(caslib = out_caslib, name = out_castable_sentiment, replace = TRUE),
+                   copyVars = column_names,
+                   rstore = list(name = astore_name, caslib = astore_caslib) ## if you uploaded manually, change may be required
+                  )'),
+              
+              '',
+              paste0("## Obtaining output/results table"),
+              paste0('scored_table <- defCasTable(conn,
+                            tablename = out_castable,
+                            caslib = out_caslib)'),
+              '',
+              paste0('head(scored_table)')
+    )
+  }
   
   ## writting R score code
   writeLines(Rscore, 
@@ -142,8 +265,9 @@ nlp_sentiment_translate <- function(in_file = NULL,
        out_file = out_file, 
        out_caslib = out_caslib, 
        out_castable_sentiment = out_castable_sentiment,
-       out_castable_matches = out_castable_matches,
-       out_castable_features = out_castable_features)
+       out_castable_matches = ifelse(astore, "", out_castable_matches),
+       out_castable_features = ifelse(astore, "", out_castable_features)
+       )
   
 }
 

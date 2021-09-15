@@ -1,4 +1,4 @@
-rsct - SAS Scoring Code Translator for R 
+rsct - SAS Scoring Code Wrapper for R 
 ================
 
 # Overview

@@ -1,6 +1,6 @@
 Package: rsct
 Title: rsct wraps SAS scoring code into R SWAT wrapper.
-Version: 0.1.15
+Version: 0.1.2
 Authors@R: 
     person(given = "Eduardo",
            family = "Hellas",

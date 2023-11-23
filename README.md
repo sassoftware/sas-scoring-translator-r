@@ -85,9 +85,9 @@ output_infos <- rsct::EPS_translate(in_file = "path/to/score_code_Gradient Boost
 # there are some info inside `output_infos` object, but no need to show in here
 ```
 
-And here is a sample of the generated code, as you will see, credentials
-and servers may be needed to be changed manually, other than that, it’s
-fully operational:
+And here is a sample of the generated code, as you see, credentials
+and servers may require tweaks, other than that, it’s
+fully functional:
 
 ``` r
 ## install swat package from github if needed, uncomment OS version
